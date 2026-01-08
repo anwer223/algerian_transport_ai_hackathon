@@ -1,0 +1,127 @@
+{
+  "metadata": {
+    "city": "Algiers",
+    "country": "Algeria",
+    "population": 4000000,
+    "area_sqkm": 363,
+    "last_updated": "2024-01-15"
+  },
+  
+  "areas": [
+    {
+      "name": "City Center",
+      "arabic_name": "الجزائر الوسطى",
+      "coordinates": {"lat": 36.7763, "lng": 3.0587},
+      "transport": ["metro", "bus", "bicycle", "walk"]
+    },
+    {
+      "name": "El Harrach",
+      "arabic_name": "الحراش",
+      "coordinates": {"lat": 36.7200, "lng": 3.1300},
+      "transport": ["metro", "tram", "bus", "bicycle"]
+    },
+    {
+      "name": "Bab El Oued",
+      "arabic_name": "باب الوادي",
+      "coordinates": {"lat": 36.7896, "lng": 3.0572},
+      "transport": ["bus", "walk"]
+    },
+    {
+      "name": "Kouba",
+      "arabic_name": "القبة",
+      "coordinates": {"lat": 36.7333, "lng": 3.0833},
+      "transport": ["bus", "bicycle", "walk"]
+    },
+    {
+      "name": "El Biar",
+      "arabic_name": "البيار",
+      "coordinates": {"lat": 36.7667, "lng": 3.0333},
+      "transport": ["bus", "walk"]
+    },
+    {
+      "name": "Hydra",
+      "arabic_name": "حيدرة",
+      "coordinates": {"lat": 36.7500, "lng": 3.0333},
+      "transport": ["bus", "walk"]
+    }
+  ],
+  
+  "transport_options": {
+    "metro": {
+      "name": "Algiers Metro",
+      "emoji": "🚇",
+      "color": "purple",
+      "cost": 50,
+      "speed_kmh": 40,
+      "emissions_kg_per_km": 0.05,
+      "description": "Fast underground metro system"
+    },
+    "bus": {
+      "name": "City Bus",
+      "emoji": "🚌",
+      "color": "blue",
+      "cost": 30,
+      "speed_kmh": 20,
+      "emissions_kg_per_km": 0.15,
+      "description": "Extensive bus network"
+    },
+    "bicycle": {
+      "name": "Bike Sharing",
+      "emoji": "🚴",
+      "color": "green",
+      "cost": 50,
+      "speed_kmh": 15,
+      "emissions_kg_per_km": 0,
+      "description": "Shared bicycle system"
+    },
+    "walk": {
+      "name": "Walking",
+      "emoji": "👣",
+      "color": "cyan",
+      "cost": 0,
+      "speed_kmh": 5,
+      "emissions_kg_per_km": 0,
+      "description": "On foot"
+    },
+    "tram": {
+      "name": "Tramway",
+      "emoji": "🚊",
+      "color": "yellow",
+      "cost": 40,
+      "speed_kmh": 25,
+      "emissions_kg_per_km": 0.04,
+      "description": "Electric tram system"
+    }
+  },
+  
+  "distance_matrix": {
+    "City Center": {
+      "El Harrach": 8.5,
+      "Bab El Oued": 2.0,
+      "Kouba": 5.5,
+      "El Biar": 3.0,
+      "Hydra": 4.0
+    },
+    "El Harrach": {
+      "City Center": 8.5,
+      "Bab El Oued": 10.0,
+      "Kouba": 7.0,
+      "El Biar": 9.0,
+      "Hydra": 8.0
+    },
+    "Bab El Oued": {
+      "City Center": 2.0,
+      "El Harrach": 10.0,
+      "Kouba": 4.0,
+      "El Biar": 3.5,
+      "Hydra": 3.0
+    },
+    "Kouba": {
+      "City Center": 5.5,
+      "El Harrach": 7.0,
+      "Bab El Oued": 4.0,
+      "El Biar": 2.5,
+      "Hydra": 2.0
+    }
+  }
+}

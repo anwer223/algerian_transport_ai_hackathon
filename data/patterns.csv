@@ -1,0 +1,16 @@
+time_range,day_type,demand_level,notes_ar,notes_fr
+05:00-07:00,weekday,low,الصباح الباكر,Tôt le matin
+07:00-09:00,weekday,very_high,ساعة الذروة الصباحية للعمل/المدرسة,Heure de pointe matinale travail/école
+09:00-12:00,weekday,medium,ساعات العمل الصباحية,Heures de travail matinales
+12:00-14:00,weekday,high,وقت الغداء وصلاة الجمعة,Heure du déjeuner et prière du vendredi
+14:00-17:00,weekday,medium,ساعات العمل بعد الظهر,Heures de travail de l'après-midi
+17:00-19:00,weekday,very_high,ساعة الذروة المسائية,Heure de pointe du soir
+19:00-22:00,weekday,medium,تنقلات اجتماعية مسائية,Déplacements sociaux du soir
+22:00-05:00,weekday,low,وقت الليل,Nuit
+08:00-12:00,saturday,medium,تسوق صباح نهاية الأسبيف,Shopping du matin du week-end
+12:00-18:00,saturday,high,أنشطة بعد الظهر في نهاية الأسبيف,Activités de l'après-midi du week-end
+08:00-12:00,sunday,medium,زيارات عائلية صباح الأحد,Visites familiales dimanche matin
+12:00-16:00,sunday,high,زيارات عائلية بعد الظهر الأحد,Visites familiales dimanche après-midi
+16:00-20:00,sunday,medium,العودة إلى المنزل مساء الأحد,Retour à la maison dimanche soir
+12:00-15:00,friday,very_high,تنقلات صلاة الجمعة,Déplacements pour la prière du vendredi
+15:00-18:00,friday,high,تجمعات عائلية يوم الجمعة,Réunions familiales du vendredi
