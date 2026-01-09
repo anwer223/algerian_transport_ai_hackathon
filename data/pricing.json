@@ -1,853 +1,246 @@
-#!/usr/bin/env python3
-"""
-Algiers Transport AI - Complete Working System
-No errors, all data included
-"""
-
-import math
-import heapq
-from datetime import datetime
-from typing import List, Dict, Tuple, Any, Optional
-import webbrowser
-import requests
-
-# ============================================================================
-# COMPLETE ALGIERS TRANSPORT DATA
-# ============================================================================
-
-class AlgiersData:
-    """Complete transport data for Algiers"""
-    
-    @staticmethod
-    def get_data():
-        """Return all transport data"""
-        return {
-            "metadata": {
-                "city": "Algiers",
-                "country": "Algeria",
-                "population": 4000000,
-                "area_sqkm": 363,
-                "last_updated": "2024-01-15"
-            },
-            
-            "areas": [
-                {"id": 1, "name": "City Center", "arabic_name": "الجزائر الوسطى", "type": "commercial",
-                 "coordinates": {"lat": 36.7763, "lng": 3.0587},
-                 "transport": ["metro", "bus", "bicycle", "walk", "tram"],
-                 "attractions": ["Casbah", "Great Mosque", "National Museum"]},
-                
-                {"id": 2, "name": "El Harrach", "arabic_name": "الحراش", "type": "residential",
-                 "coordinates": {"lat": 36.7200, "lng": 3.1300},
-                 "transport": ["metro", "tram", "bus", "bicycle"],
-                 "attractions": ["Botanical Garden", "Zoo", "Olympic Stadium"]},
-                
-                {"id": 3, "name": "Bab El Oued", "arabic_name": "باب الوادي", "type": "historic",
-                 "coordinates": {"lat": 36.7896, "lng": 3.0572},
-                 "transport": ["bus", "walk"],
-                 "attractions": ["Martyr's Square", "Old Port"]},
-                
-                {"id": 4, "name": "Kouba", "arabic_name": "القبة", "type": "residential",
-                 "coordinates": {"lat": 36.7333, "lng": 3.0833},
-                 "transport": ["bus", "bicycle", "walk"],
-                 "attractions": ["University District", "Local Markets"]},
-                
-                {"id": 5, "name": "El Biar", "arabic_name": "البيار", "type": "residential",
-                 "coordinates": {"lat": 36.7667, "lng": 3.0333},
-                 "transport": ["bus", "walk"],
-                 "attractions": ["Diplomatic Quarter", "Parks"]},
-                
-                {"id": 6, "name": "Hydra", "arabic_name": "حيدرة", "type": "residential",
-                 "coordinates": {"lat": 36.7500, "lng": 3.0333},
-                 "transport": ["bus", "walk"],
-                 "attractions": ["Upscale Residences", "Shopping"]}
-            ],
-            
-            "transport_modes": {
-                "metro": {
-                    "name": "Algiers Metro",
-                    "emoji": "🚇",
-                    "color": "#FF0000",
-                    "speed_kmh": 40,
-                    "cost_per_km": 5,
-                    "base_cost": 50,
-                    "emissions_kg_per_km": 0.05,
-                    "comfort": 0.8,
-                    "reliability": 0.9,
-                    "description": "Fast underground metro system"
-                },
-                "bus": {
-                    "name": "City Bus",
-                    "emoji": "🚌",
-                    "color": "#0000FF",
-                    "speed_kmh": 20,
-                    "cost_per_km": 2,
-                    "base_cost": 30,
-                    "emissions_kg_per_km": 0.15,
-                    "comfort": 0.5,
-                    "reliability": 0.7,
-                    "description": "Extensive bus network"
-                },
-                "bicycle": {
-                    "name": "Bike Sharing",
-                    "emoji": "🚴",
-                    "color": "#00FF00",
-                    "speed_kmh": 15,
-                    "cost_per_km": 3,
-                    "base_cost": 50,
-                    "emissions_kg_per_km": 0,
-                    "comfort": 0.6,
-                    "reliability": 0.8,
-                    "description": "Shared bicycle system"
-                },
-                "walk": {
-                    "name": "Walking",
-                    "emoji": "👣",
-                    "color": "#00FFFF",
-                    "speed_kmh": 5,
-                    "cost_per_km": 0,
-                    "base_cost": 0,
-                    "emissions_kg_per_km": 0,
-                    "comfort": 0.7,
-                    "reliability": 1.0,
-                    "description": "On foot"
-                },
-                "tram": {
-                    "name": "Tramway",
-                    "emoji": "🚊",
-                    "color": "#FFFF00",
-                    "speed_kmh": 25,
-                    "cost_per_km": 4,
-                    "base_cost": 40,
-                    "emissions_kg_per_km": 0.04,
-                    "comfort": 0.7,
-                    "reliability": 0.85,
-                    "description": "Electric tram system"
-                }
-            },
-            
-            "distance_matrix": {
-                "City Center": {
-                    "El Harrach": 8.5,
-                    "Bab El Oued": 2.0,
-                    "Kouba": 5.5,
-                    "El Biar": 3.0,
-                    "Hydra": 4.0
-                },
-                "El Harrach": {
-                    "City Center": 8.5,
-                    "Bab El Oued": 10.0,
-                    "Kouba": 7.0,
-                    "El Biar": 9.0,
-                    "Hydra": 8.0
-                },
-                "Bab El Oued": {
-                    "City Center": 2.0,
-                    "El Harrach": 10.0,
-                    "Kouba": 4.0,
-                    "El Biar": 3.5,
-                    "Hydra": 3.0
-                },
-                "Kouba": {
-                    "City Center": 5.5,
-                    "El Harrach": 7.0,
-                    "Bab El Oued": 4.0,
-                    "El Biar": 2.5,
-                    "Hydra": 2.0
-                }
-            }
+{
+  "transport_modes": {
+    "bicycle": {
+      "name_ar": "دراجة هوائية",
+      "name_fr": "Vélo",
+      "pricing_models": [
+        {
+          "type": "hourly",
+          "price_dzd": 50,
+          "description_ar": "ساعة واحدة",
+          "description_fr": "1 heure",
+          "max_duration_hours": 24,
+          "popular_for": ["رحلات قصيرة", "تسوق", "زيارات سريعة"],
+          "savings_tip": "إذا كانت رحلتك أكثر من 6 ساعات، الباقة اليومية أرخص"
+        },
+        {
+          "type": "daily",
+          "price_dzd": 300,
+          "description_ar": "24 ساعة",
+          "description_fr": "24 heures",
+          "max_duration_hours": 24,
+          "popular_for": ["يوم عمل", "جولة سياحية", "أنشطة يوم كامل"],
+          "savings_tip": "وفر 50% مقارنة ب 6 ساعات فردية"
+        },
+        {
+          "type": "weekly",
+          "price_dzd": 1500,
+          "description_ar": "7 أيام",
+          "description_fr": "7 jours",
+          "max_duration_days": 7,
+          "popular_for": ["سائحون", "طلاب", "مقيمون مؤقتون"],
+          "savings_tip": "سعر اليوم الواحد 214 دينار فقط"
+        },
+        {
+          "type": "monthly",
+          "price_dzd": 5000,
+          "description_ar": "30 يوم",
+          "description_fr": "30 jours",
+          "max_duration_days": 30,
+          "popular_for": ["مقيمون دائمون", "موظفون", "رواد منتظمون"],
+          "savings_tip": "سعر اليوم الواحد 167 دينار فقط"
         }
-
-# ============================================================================
-# WEATHER SERVICE
-# ============================================================================
-
-class WeatherService:
-    """Weather service for Algiers"""
+      ],
+      "deposit_dzd": 5000,
+      "late_fee_per_hour": 20,
+      "damage_fees": {
+        "minor": 500,
+        "moderate": 2000,
+        "major": 5000,
+        "theft": 15000
+      },
+      "discounts": {
+        "student": 20,
+        "senior": 30,
+        "family": 15,
+        "group": 10
+      }
+    },
     
-    def __init__(self):
-        self.api_key = "3a773fc067b71064a7eb7cf4452a0289"
-        self.base_url = "https://api.openweathermap.org/data/2.5/weather"
-    
-    def get_weather(self) -> Dict[str, Any]:
-        """Get current weather in Algiers"""
-        try:
-            params = {
-                "q": "Algiers,DZ",
-                "appid": self.api_key,
-                "units": "metric",
-                "lang": "en"
-            }
-            
-            response = requests.get(self.base_url, params=params, timeout=5)
-            if response.status_code == 200:
-                return self._parse_weather(response.json())
-        except:
-            pass
-        
-        return self._get_mock_weather()
-    
-    def _parse_weather(self, data: Dict) -> Dict[str, Any]:
-        """Parse weather data"""
-        return {
-            "temperature": round(data["main"]["temp"]),
-            "feels_like": round(data["main"]["feels_like"]),
-            "humidity": data["main"]["humidity"],
-            "description": data["weather"][0]["description"].title(),
-            "wind_speed": data["wind"]["speed"] * 3.6,
-            "icon": data["weather"][0]["icon"]
+    "metro": {
+      "name_ar": "مترو الجزائر",
+      "name_fr": "Métro d'Alger",
+      "pricing_models": [
+        {
+          "type": "single",
+          "price_dzd": 50,
+          "description_ar": "تذكرة واحدة",
+          "description_fr": "Ticket unique",
+          "validity": "رحلة واحدة",
+          "transfer_allowed": false
+        },
+        {
+          "type": "daily",
+          "price_dzd": 100,
+          "description_ar": "يوم كامل",
+          "description_fr": "Pass journée",
+          "validity": "24 ساعة",
+          "transfer_allowed": true,
+          "max_rides": 10
+        },
+        {
+          "type": "weekly",
+          "price_dzd": 500,
+          "description_ar": "أسبوع",
+          "description_fr": "Pass semaine",
+          "validity": "7 أيام",
+          "transfer_allowed": true,
+          "max_rides": 50
+        },
+        {
+          "type": "monthly",
+          "price_dzd": 1800,
+          "description_ar": "شهر",
+          "description_fr": "Pass mois",
+          "validity": "30 يوم",
+          "transfer_allowed": true,
+          "unlimited_rides": true
         }
+      ],
+      "children_discount": 50,
+      "student_discount": 30,
+      "senior_discount": 50
+    },
     
-    def _get_mock_weather(self) -> Dict[str, Any]:
-        """Get mock weather"""
-        hour = datetime.now().hour
-        
-        if 6 <= hour < 12:
-            temp = 22
-            condition = "Sunny"
-        elif 12 <= hour < 18:
-            temp = 26
-            condition = "Partly Cloudy"
-        elif 18 <= hour < 24:
-            temp = 20
-            condition = "Clear"
-        else:
-            temp = 18
-            condition = "Clear"
-        
-        return {
-            "temperature": temp,
-            "feels_like": temp + 2,
-            "humidity": 65,
-            "description": condition,
-            "wind_speed": 12.5,
-            "icon": "01d"
+    "bus": {
+      "name_ar": "حافلات النقل العمومي",
+      "name_fr": "Bus public",
+      "pricing_models": [
+        {
+          "type": "single",
+          "price_dzd": 30,
+          "description_ar": "تذكرة واحدة",
+          "description_fr": "Ticket unique",
+          "validity": "رحلة واحدة",
+          "transfer_allowed": false
+        },
+        {
+          "type": "daily",
+          "price_dzd": 120,
+          "description_ar": "يوم كامل",
+          "description_fr": "Pass journée",
+          "validity": "24 ساعة",
+          "transfer_allowed": true,
+          "max_rides": 8
+        },
+        {
+          "type": "weekly",
+          "price_dzd": 600,
+          "description_ar": "أسبوع",
+          "description_fr": "Pass semaine",
+          "validity": "7 أيام",
+          "transfer_allowed": true,
+          "max_rides": 40
         }
+      ],
+      "zone_based": false,
+      "night_surcharge": 10
+    },
     
-    def get_weather_impact(self, weather: Dict, mode: str) -> float:
-        """Calculate weather impact factor"""
-        temp = weather["temperature"]
-        condition = weather["description"].lower()
-        
-        impact = 1.0
-        
-        # Temperature impact
-        if mode in ["bicycle", "walk"]:
-            if temp > 35:
-                impact *= 0.4
-            elif temp > 30:
-                impact *= 0.7
-            elif 20 <= temp <= 25:
-                impact *= 1.2
-        
-        # Rain impact
-        if "rain" in condition:
-            if mode in ["bicycle", "walk"]:
-                impact *= 0.3
-        
-        return max(0.5, min(1.5, impact))
-
-# ============================================================================
-# SHORTEST PATH ALGORITHM
-# ============================================================================
-
-class TransportGraph:
-    """Graph for finding shortest paths"""
-    
-    def __init__(self, data: Dict):
-        self.data = data
-        self.graph = self._build_graph()
-    
-    def _build_graph(self) -> Dict[str, List[Tuple[str, float, str]]]:
-        """Build transport graph"""
-        graph = {}
-        data = self.data
-        
-        for area in data["areas"]:
-            area_name = area["name"]
-            graph[area_name] = []
-            
-            for other_area in data["areas"]:
-                other_name = other_area["name"]
-                if area_name == other_name:
-                    continue
-                
-                # Get distance
-                distance = self._get_distance(area_name, other_name)
-                if distance == 0:
-                    continue
-                
-                # Find common transport
-                area_modes = set(area.get("transport", []))
-                other_modes = set(other_area.get("transport", []))
-                common_modes = area_modes.intersection(other_modes)
-                
-                for mode in common_modes:
-                    if mode in data["transport_modes"]:
-                        speed = data["transport_modes"][mode]["speed_kmh"]
-                        time = (distance / speed) * 60
-                        
-                        # Add waiting time
-                        if mode in ["metro", "bus", "tram"]:
-                            time += 5
-                        
-                        graph[area_name].append((other_name, time, mode))
-        
-        return graph
-    
-    def _get_distance(self, start: str, end: str) -> float:
-        """Get distance between areas"""
-        distances = self.data["distance_matrix"]
-        
-        if start in distances and end in distances[start]:
-            return distances[start][end]
-        if end in distances and start in distances[end]:
-            return distances[end][start]
-        
-        # Try to find coordinates
-        start_coords = None
-        end_coords = None
-        
-        for area in self.data["areas"]:
-            if area["name"] == start:
-                start_coords = area.get("coordinates")
-            if area["name"] == end:
-                end_coords = area.get("coordinates")
-        
-        if start_coords and end_coords:
-            return self._calculate_distance(start_coords, end_coords)
-        
-        return 5.0
-    
-    def _calculate_distance(self, coord1: Dict, coord2: Dict) -> float:
-        """Calculate distance between coordinates"""
-        lat1, lon1 = coord1["lat"], coord1["lng"]
-        lat2, lon2 = coord2["lat"], coord2["lng"]
-        
-        # Simple approximation
-        dlat = (lat2 - lat1) * 111.32
-        dlon = (lon2 - lon1) * 111.32 * math.cos(math.radians((lat1 + lat2) / 2))
-        
-        return math.sqrt(dlat**2 + dlon**2)
-    
-    def dijkstra(self, start: str, end: str) -> Tuple[List[str], float, List[str]]:
-        """Dijkstra's shortest path algorithm"""
-        if start not in self.graph or end not in self.graph:
-            return [], float('inf'), []
-        
-        pq = [(0, start, [], [])]
-        visited = set()
-        
-        while pq:
-            current_time, current_node, path, modes = heapq.heappop(pq)
-            
-            if current_node in visited:
-                continue
-                
-            visited.add(current_node)
-            new_path = path + [current_node]
-            
-            if current_node == end:
-                return new_path, current_time, modes
-            
-            for neighbor, time_cost, mode in self.graph[current_node]:
-                if neighbor not in visited:
-                    new_modes = modes + [mode]
-                    heapq.heappush(pq, (current_time + time_cost, neighbor, new_path, new_modes))
-        
-        return [], float('inf'), []
-    
-    def find_paths(self, start: str, end: str, max_paths: int = 3) -> List[Dict[str, Any]]:
-        """Find multiple paths"""
-        paths = []
-        
-        # Get shortest path
-        path, time, modes = self.dijkstra(start, end)
-        if path:
-            paths.append({
-                "path": path,
-                "total_time": time,
-                "modes": modes
-            })
-        
-        return paths
-
-# ============================================================================
-# RECOMMENDATION ENGINE
-# ============================================================================
-
-class RecommendationEngine:
-    """AI recommendation engine"""
-    
-    def __init__(self, data: Dict, weather_service: WeatherService):
-        self.data = data
-        self.weather_service = weather_service
-        self.graph = TransportGraph(data)
-        
-        self.criteria_weights = {
-            "fastest": {"time": 0.6, "cost": 0.1, "comfort": 0.1, "environment": 0.1, "safety": 0.1},
-            "cheapest": {"time": 0.1, "cost": 0.6, "comfort": 0.1, "environment": 0.1, "safety": 0.1},
-            "greenest": {"time": 0.1, "cost": 0.1, "comfort": 0.1, "environment": 0.6, "safety": 0.1},
-            "comfort": {"time": 0.1, "cost": 0.2, "comfort": 0.5, "environment": 0.1, "safety": 0.1},
-            "balanced": {"time": 0.3, "cost": 0.2, "comfort": 0.2, "environment": 0.2, "safety": 0.1}
+    "tram": {
+      "name_ar": "ترامواي الجزائر",
+      "name_fr": "Tramway d'Alger",
+      "pricing_models": [
+        {
+          "type": "single",
+          "price_dzd": 40,
+          "description_ar": "تذكرة واحدة",
+          "description_fr": "Ticket unique",
+          "validity": "رحلة واحدة",
+          "transfer_allowed": false
+        },
+        {
+          "type": "daily",
+          "price_dzd": 150,
+          "description_ar": "يوم كامل",
+          "description_fr": "Pass journée",
+          "validity": "24 ساعة",
+          "transfer_allowed": true,
+          "max_rides": 10
         }
+      ],
+      "integrated_with_metro": true
+    },
     
-    def get_recommendations(self, start: str, end: str, criteria: str = "balanced") -> List[Dict[str, Any]]:
-        """Get route recommendations"""
-        if not self._is_valid_area(start) or not self._is_valid_area(end):
-            return []
-        
-        weather = self.weather_service.get_weather()
-        paths = self.graph.find_paths(start, end, max_paths=3)
-        
-        recommendations = []
-        for path_info in paths:
-            recommendation = self._evaluate_path(path_info, weather, criteria)
-            if recommendation:
-                recommendations.append(recommendation)
-        
-        recommendations.sort(key=lambda x: x["score"], reverse=True)
-        return recommendations
-    
-    def _is_valid_area(self, area_name: str) -> bool:
-        """Check if area is valid"""
-        for area in self.data["areas"]:
-            if area["name"].lower() == area_name.lower():
-                return True
-            if area.get("arabic_name", "").lower() == area_name.lower():
-                return True
-        return False
-    
-    def _evaluate_path(self, path_info: Dict, weather: Dict, criteria: str) -> Optional[Dict[str, Any]]:
-        """Evaluate a path"""
-        path = path_info["path"]
-        modes = path_info["modes"]
-        base_time = path_info["total_time"]
-        
-        if not path or len(path) < 2:
-            return None
-        
-        # Calculate metrics
-        metrics = self._calculate_metrics(path, modes, base_time, weather)
-        
-        # Calculate score
-        weights = self.criteria_weights.get(criteria, self.criteria_weights["balanced"])
-        score = self._calculate_score(metrics, weights)
-        
-        return {
-            "path": path,
-            "modes": modes,
-            "metrics": metrics,
-            "score": round(score, 1),
-            "criteria": criteria,
-            "weather": weather
+    "yassir": {
+      "name_ar": "ياسر - تطبيق النقل",
+      "name_fr": "Yassir - Application de transport",
+      "pricing_components": {
+        "base_fare": 150,
+        "per_km": 60,
+        "per_minute": 5,
+        "minimum_fare": 200,
+        "cancellation_fee": 100
+      },
+      "car_types": {
+        "economy": {
+          "name_ar": "اقتصادي",
+          "base_multiplier": 1.0,
+          "capacity": 4
+        },
+        "comfort": {
+          "name_ar": "مريح",
+          "base_multiplier": 1.3,
+          "capacity": 4
+        },
+        "family": {
+          "name_ar": "عائلي",
+          "base_multiplier": 1.5,
+          "capacity": 6
+        },
+        "luxury": {
+          "name_ar": "فاخر",
+          "base_multiplier": 2.0,
+          "capacity": 4
         }
+      },
+      "surge_pricing": {
+        "peak_hours": {"multiplier": 1.5, "hours": "07:00-09:00, 16:00-19:00"},
+        "weekend_night": {"multiplier": 2.0, "hours": "22:00-06:00"},
+        "special_events": {"multiplier": 2.5, "description": "أحداث خاصة وأعياد"}
+      },
+      "waiting_fee_per_minute": 2,
+      "airport_surcharge": 200,
+      "payment_methods": ["نقدي", "بطاقة ائتمان", "محفظة إلكترونية"]
+    },
     
-    def _calculate_metrics(self, path: List[str], modes: List[str], base_time: float, weather: Dict) -> Dict[str, Any]:
-        """Calculate path metrics"""
-        total_distance = 0
-        total_cost = 0
-        total_emissions = 0
-        avg_comfort = 0
-        
-        # Calculate for each segment
-        for i in range(len(path) - 1):
-            start = path[i]
-            end = path[i + 1]
-            mode = modes[i] if i < len(modes) else "walk"
-            
-            # Get distance
-            distance = self._get_distance(start, end)
-            total_distance += distance
-            
-            # Get mode data
-            mode_data = self.data["transport_modes"].get(mode, {})
-            
-            # Cost
-            cost = mode_data.get("base_cost", 0) + (distance * mode_data.get("cost_per_km", 0))
-            total_cost += cost
-            
-            # Emissions
-            emissions = distance * mode_data.get("emissions_kg_per_km", 0)
-            total_emissions += emissions
-            
-            # Comfort
-            comfort = mode_data.get("comfort", 0.5)
-            avg_comfort += comfort
-        
-        # Averages
-        if len(path) > 1:
-            avg_comfort /= (len(path) - 1)
-        
-        # Apply weather impact
-        weather_factor = self.weather_service.get_weather_impact(weather, modes[0] if modes else "walk")
-        adjusted_time = base_time * weather_factor
-        
-        return {
-            "total_time": round(adjusted_time, 1),
-            "total_distance": round(total_distance, 1),
-            "total_cost": round(total_cost),
-            "total_emissions": round(total_emissions, 2),
-            "comfort": round(avg_comfort, 2),
-            "weather_factor": round(weather_factor, 2)
-        }
-    
-    def _get_distance(self, start: str, end: str) -> float:
-        """Get distance between areas"""
-        distances = self.data["distance_matrix"]
-        
-        if start in distances and end in distances[start]:
-            return distances[start][end]
-        if end in distances and start in distances[end]:
-            return distances[end][start]
-        
-        return 5.0
-    
-    def _calculate_score(self, metrics: Dict, weights: Dict) -> float:
-        """Calculate score 0-100"""
-        # Normalize metrics
-        time_score = 1 - min(metrics["total_time"] / 120, 1)
-        cost_score = 1 - min(metrics["total_cost"] / 500, 1)
-        emission_score = 1 - min(metrics["total_emissions"] / 5, 1)
-        comfort_score = metrics["comfort"]
-        
-        # Weighted sum
-        weighted_score = (
-            weights["time"] * time_score +
-            weights["cost"] * cost_score +
-            weights["environment"] * emission_score +
-            weights["comfort"] * comfort_score
-        )
-        
-        # Convert to 0-100
-        return max(0, min(100, weighted_score * 100))
-    
-    def get_google_maps_url(self, start: str, end: str, mode: str = "transit") -> str:
-        """Generate Google Maps URL"""
-        start_coords = None
-        end_coords = None
-        
-        for area in self.data["areas"]:
-            if area["name"].lower() == start.lower():
-                start_coords = area["coordinates"]
-            if area["name"].lower() == end.lower():
-                end_coords = area["coordinates"]
-        
-        if not start_coords or not end_coords:
-            return ""
-        
-        # Create URL
-        url = f"https://www.google.com/maps/dir/"
-        url += f"{start_coords['lat']},{start_coords['lng']}/"
-        url += f"{end_coords['lat']},{end_coords['lng']}/"
-        
-        # Add travel mode
-        if mode == "walking":
-            url += "data=!4m2!4m1!3e2"
-        elif mode == "bicycling":
-            url += "data=!4m2!4m1!3e1"
-        elif mode == "transit":
-            url += "data=!4m2!4m1!3e3"
-        else:
-            url += "data=!4m2!4m1!3e0"
-        
-        return url
-
-# ============================================================================
-# TERMINAL INTERFACE
-# ============================================================================
-
-class TerminalInterface:
-    """Beautiful terminal interface"""
-    
-    def __init__(self):
-        self.data = AlgiersData.get_data()
-        self.weather_service = WeatherService()
-        self.recommender = RecommendationEngine(self.data, self.weather_service)
-        self.colors = {
-            "red": "1;31",
-            "green": "1;32",
-            "yellow": "1;33",
-            "blue": "1;34",
-            "purple": "1;35",
-            "cyan": "1;36",
-            "white": "1;37"
-        }
-    
-    def print_color(self, text: str, color: str = "white"):
-        """Print colored text"""
-        code = self.colors.get(color, "1;37")
-        print(f"\033[{code}m{text}\033[0m")
-    
-    def print_header(self):
-        """Print header"""
-        print("\n" + "="*70)
-        self.print_color("🇩🇿  ALGIERS TRANSPORT AI SYSTEM", "blue")
-        self.print_color("🚇  Smart Route Recommendations", "cyan")
-        print("="*70)
-    
-    def print_areas(self):
-        """Print available areas"""
-        areas = self.data["areas"]
-        
-        print("\n" + "-"*70)
-        self.print_color("📍  AVAILABLE AREAS:", "yellow")
-        print("-"*70)
-        
-        print("\n  English Name          Arabic Name")
-        print("  ────────────────────  ───────────────────")
-        
-        for area in areas:
-            eng = area["name"]
-            ar = area.get("arabic_name", "")
-            print(f"  • {eng:<20} {ar}")
-    
-    def print_weather(self, weather: Dict):
-        """Print weather"""
-        print("\n" + "-"*70)
-        self.print_color("🌤️  CURRENT WEATHER:", "cyan")
-        print("-"*70)
-        
-        temp = weather["temperature"]
-        condition = weather["description"]
-        
-        if "rain" in condition.lower():
-            icon = "🌧️"
-        elif "cloud" in condition.lower():
-            icon = "☁️"
-        elif "clear" in condition.lower():
-            icon = "☀️"
-        else:
-            icon = "🌤️"
-        
-        print(f"\n  {icon}  {condition}")
-        print(f"  🌡️  Temperature: {temp}°C")
-        print(f"  💧  Humidity: {weather['humidity']}%")
-        print(f"  💨  Wind: {weather['wind_speed']:.1f} km/h")
-    
-    def print_recommendation(self, rec: Dict, index: int):
-        """Print a recommendation"""
-        path = rec["path"]
-        modes = rec["modes"]
-        metrics = rec["metrics"]
-        score = rec["score"]
-        
-        # Mode emojis
-        mode_emojis = {
-            "metro": "🚇",
-            "bus": "🚌",
-            "bicycle": "🚴",
-            "walk": "👣",
-            "tram": "🚊"
-        }
-        
-        # Color based on score
-        if score >= 80:
-            color = "green"
-        elif score >= 60:
-            color = "yellow"
-        else:
-            color = "red"
-        
-        print(f"\n{'━'*70}")
-        self.print_color(f"✨  RECOMMENDATION #{index + 1} (Score: {score}/100)", color)
-        print(f"{'━'*70}")
-        
-        print(f"\n  🗺️  Route: {path[0]} → {path[-1]}")
-        print(f"  📏  Distance: {metrics['total_distance']} km")
-        print(f"  ⏱️  Time: {metrics['total_time']} min")
-        print(f"  💰  Cost: {metrics['total_cost']} DZD")
-        print(f"  🌿  Emissions: {metrics['total_emissions']} kg CO₂")
-        
-        # Transport modes
-        if modes:
-            mode_display = []
-            for mode in modes:
-                emoji = mode_emojis.get(mode, "📍")
-                mode_display.append(f"{emoji}")
-            print(f"  🚦  Modes: {' → '.join(mode_display)}")
-        
-        # Weather impact
-        if metrics['weather_factor'] < 0.8:
-            self.print_color(f"  ⚠️  Weather impact: High", "yellow")
-        
-        # Best for
-        if metrics['total_cost'] < 50:
-            print(f"  👍  Best for: Budget travelers")
-        elif metrics['total_emissions'] < 0.1:
-            print(f"  👍  Best for: Eco-friendly travel")
-        elif metrics['total_time'] < 30:
-            print(f"  👍  Best for: Fast travel")
-        else:
-            print(f"  👍  Best for: General travel")
-    
-    def get_criteria(self) -> str:
-        """Get criteria choice"""
-        print("\n" + "-"*70)
-        self.print_color("⚖️  SELECT CRITERIA:", "purple")
-        print("-"*70)
-        
-        print("  1. 🏎️  Fastest")
-        print("  2. 💰  Cheapest")
-        print("  3. 🌿  Greenest")
-        print("  4. 🛋️  Most Comfortable")
-        print("  5. ⚖️  Balanced (Recommended)")
-        
-        while True:
-            choice = input("\n  Your choice [1-5]: ").strip()
-            if choice == "1":
-                return "fastest"
-            elif choice == "2":
-                return "cheapest"
-            elif choice == "3":
-                return "greenest"
-            elif choice == "4":
-                return "comfort"
-            elif choice == "5" or choice == "":
-                return "balanced"
-            else:
-                print("  Please enter 1-5")
-    
-    def get_area(self, prompt: str) -> Optional[str]:
-        """Get valid area input"""
-        while True:
-            area = input(f"\n  {prompt}: ").strip()
-            
-            if not area:
-                self.print_color("  ❌  Please enter a location", "red")
-                continue
-            
-            if area.lower() in ["exit", "quit", "q"]:
-                return None
-            
-            if area.lower() == "areas":
-                self.print_areas()
-                continue
-            
-            # Check if valid
-            valid = False
-            for a in self.data["areas"]:
-                if a["name"].lower() == area.lower():
-                    valid = True
-                    area = a["name"]  # Use correct case
-                    break
-                elif a.get("arabic_name", "").lower() == area.lower():
-                    valid = True
-                    area = a["name"]
-                    break
-            
-            if valid:
-                return area
-            else:
-                self.print_color(f"  ❌  '{area}' is not valid", "red")
-                self.print_color("  💡  Type 'areas' to see available areas", "yellow")
-    
-    def open_google_maps(self, start: str, end: str):
-        """Open Google Maps"""
-        url = self.recommender.get_google_maps_url(start, end, "transit")
-        
-        if not url:
-            self.print_color("  ❌  Could not generate URL", "red")
-            return
-        
-        self.print_color("\n  🌐  Opening Google Maps...", "cyan")
-        
-        try:
-            webbrowser.open(url)
-            self.print_color("  ✅  Google Maps opened", "green")
-        except:
-            self.print_color("  ⚠️  Could not open browser", "yellow")
-            print(f"  🔗  URL: {url}")
-    
-    def run(self):
-        """Main application loop"""
-        self.print_header()
-        
-        # Print city info
-        metadata = self.data["metadata"]
-        print(f"\n🏙️  City: {metadata['city']}")
-        print(f"👥  Population: {metadata['population']:,}")
-        print(f"📏  Area: {metadata['area_sqkm']} km²")
-        
-        self.print_areas()
-        
-        while True:
-            try:
-                print("\n" + "="*70)
-                self.print_color("📍  ENTER YOUR JOURNEY", "blue")
-                print("="*70)
-                
-                # Get start
-                start = self.get_area("Start location")
-                if start is None:
-                    self.print_color("\n👋  Goodbye!", "green")
-                    break
-                
-                # Get end
-                end = self.get_area("End location")
-                if end is None:
-                    self.print_color("\n👋  Goodbye!", "green")
-                    break
-                
-                if start.lower() == end.lower():
-                    self.print_color("  ⚠️  Same start and end!", "yellow")
-                    continue
-                
-                # Get weather
-                weather = self.weather_service.get_weather()
-                self.print_weather(weather)
-                
-                # Get criteria
-                criteria = self.get_criteria()
-                
-                # Get recommendations
-                self.print_color(f"\n🔍  Finding routes...", "cyan")
-                recommendations = self.recommender.get_recommendations(start, end, criteria)
-                
-                if not recommendations:
-                    self.print_color("  ❌  No routes found", "red")
-                    continue
-                
-                # Show recommendations
-                print("\n" + "⭐"*70)
-                self.print_color("  🎯  RECOMMENDATIONS", "green")
-                print("⭐"*70)
-                
-                for i, rec in enumerate(recommendations):
-                    self.print_recommendation(rec, i)
-                
-                # Ask about Google Maps
-                print("\n" + "-"*70)
-                choice = input("  🗺️  Open in Google Maps? (Y/n): ").strip().lower()
-                
-                if choice in ["", "y", "yes"]:
-                    self.open_google_maps(start, end)
-                
-                # Continue?
-                print("\n" + "-"*70)
-                again = input("  🔄  New route? (Y/n): ").strip().lower()
-                
-                if again in ["n", "no"]:
-                    self.print_color("\n👋  Thank you!", "green")
-                    break
-                
-                print("\n" * 2)
-                
-            except KeyboardInterrupt:
-                self.print_color("\n\n👋  Goodbye!", "green")
-                break
-            except Exception as e:
-                self.print_color(f"\n❌  Error: {str(e)}", "red")
-                continue
-
-# ============================================================================
-# MAIN
-# ============================================================================
-
-if __name__ == "__main__":
-    try:
-        app = TerminalInterface()
-        app.run()
-    except KeyboardInterrupt:
-        print("\n\n👋  Goodbye!")
-    except Exception as e:
-        print(f"\n❌  Error: {e}")
+    "car": {
+      "name_ar": "سيارة خاصة",
+      "name_fr": "Voiture personnelle",
+      "cost_components": {
+        "fuel_per_km": 25,
+        "parking_downtown": 200,
+        "parking_suburbs": 50,
+        "tolls_per_trip": 30,
+        "maintenance_per_km": 5,
+        "insurance_daily": 100
+      },
+      "average_fuel_consumption": "7 لتر/100 كم",
+      "co2_emissions": "150 جم/كم"
+    }
+  },
+  
+  "energy_calculations": {
+    "fuel_subside_per_kwh": 8,
+    "co2_cost_per_kg": 50,
+    "health_benefit_per_km_bike": 5,
+    "traffic_congestion_cost_per_car": 10
+  },
+  
+  "comparative_costs": {
+    "per_10km": {
+      "bicycle": {"cost_dzd": 50, "time_min": 40, "co2_kg": 0},
+      "metro": {"cost_dzd": 50, "time_min": 25, "co2_kg": 0.05},
+      "bus": {"cost_dzd": 30, "time_min": 45, "co2_kg": 0.15},
+      "yassir": {"cost_dzd": 750, "time_min": 25, "co2_kg": 0.25},
+      "car": {"cost_dzd": 350, "time_min": 20, "co2_kg": 1.5}
+    },
+    "monthly_commute_20km_day": {
+      "bicycle": {"cost_dzd": 3000, "health_benefit": "عالية"},
+      "metro": {"cost_dzd": 1800, "reliability": "عالية"},
+      "bus": {"cost_dzd": 1200, "flexibility": "منخفضة"},
+      "yassir": {"cost_dzd": 30000, "comfort": "عالية"},
+      "car": {"cost_dzd": 14000, "convenience": "عالية"}
+    }
+  }
+}
