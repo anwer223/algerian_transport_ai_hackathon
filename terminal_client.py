@@ -1,13 +1,10 @@
 #!/usr/bin/env python3
-"""
-Terminal Client for Algiers Transport
-ONLY accepts valid area names from the data
-"""
+
 
 import sys
 import os
 
-# Add the current directory to Python path
+
 current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(current_dir, "al_engine"))
 from ai_engine.recommendation_engine import TransportRecommender
