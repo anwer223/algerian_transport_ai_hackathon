@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-"""
-API endpoints for Algiers Transport AI
-"""
+
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
