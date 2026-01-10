@@ -11,17 +11,10 @@ import math
 import os
 
 class TransportRecommender:
-    """Main AI class that recommends optimal transport options"""
+    
     
     def __init__(self, transport_data: dict, preference: str = "balanced", user_id: str = None):
-        """
-        Initialize recommender with transport data
-        
-        Args:
-            transport_data: The complete transport data structure you provided
-            preference: 'fastest', 'cheapest', 'greenest', 'comfort', 'balanced'
-            user_id: User ID for personalized recommendations
-        """
+       
         self.transport_data = transport_data
         self.preference = preference
         
@@ -218,7 +211,6 @@ class TransportRecommender:
         return options
     
     def _generate_tram_options(self, start: str, end: str, distance: float, hour: int) -> List[Dict[str, Any]]:
-        """Generate tram route options"""
         options = []
         tram_info = self.get_tram_info()
         
