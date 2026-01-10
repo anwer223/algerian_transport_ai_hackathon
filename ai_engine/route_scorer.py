@@ -1,23 +1,15 @@
 #!/usr/bin/env python3
-"""
-Route scoring algorithms for Algiers transport
-"""
+
 
 import math
 from datetime import datetime
 
 class RouteScorer:
-    """Scores routes based on multiple factors"""
+   
     
     @staticmethod
     def calculate_traffic_score(area: str, time_obj: datetime) -> float:
-        """
-        Calculate traffic score for Algiers areas (0-1, lower = worse traffic)
-        
-        Args:
-            area: Area in Algiers
-            time_obj: Time of travel
-        """
+      
         hour = time_obj.hour
         weekday = time_obj.weekday()  # 0=Monday, 6=Sunday
         
@@ -43,12 +35,7 @@ class RouteScorer:
     
     @staticmethod
     def calculate_weather_impact(mode: str, weather_condition: str = "sunny") -> float:
-        """
-        Calculate weather impact on different transport modes
-        
-        Returns:
-            Availability multiplier (0-1)
-        """
+    
         weather_impact = {
             "bicycle": {"sunny": 1.0, "rain": 0.3, "hot": 0.7, "cold": 0.8},
             "metro": {"sunny": 1.0, "rain": 1.2, "hot": 1.0, "cold": 1.0},
