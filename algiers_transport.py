@@ -1,9 +1,4 @@
 #!/usr/bin/env python3
-"""
-Algiers Transport AI - Smart System
-Automatically shows best options for each criteria
-"""
-
 import math
 import heapq
 from datetime import datetime
@@ -16,11 +11,10 @@ import requests
 # ============================================================================
 
 class AlgiersData:
-    """Complete transport data for Algiers"""
     
     @staticmethod
     def get_data():
-        """Return all transport data"""
+      
         return {
             "metadata": {
                 "city": "Algiers",
